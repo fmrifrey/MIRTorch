@@ -48,10 +48,11 @@ def cg_block(x0, b, A, tol, max_iter, alert, eval_func, P):
         if eval_func is not None:
             saved = []
         while rktrk.item() > tol and num_loop < max_iter:
-            pktapk = torch.sum(pk.conj() * (A * pk)).abs()
+            Apk = A * pk
+            pktapk = torch.sum(pk.conj() * (Apk)).abs()
             alpha = rktrk / pktapk
             xk1 = xk.add_(alpha * pk)
-            rk1 = rk.sub_(alpha * A * pk)
+            rk1 = rk.sub_(alpha * Apk)
             rk1trk1 = torch.square(torch.norm(rk1))
             beta = rk1trk1 / rktrk
             pk1 = (pk.mul_(beta)).add_(rk1)
@@ -77,10 +78,11 @@ def cg_block(x0, b, A, tol, max_iter, alert, eval_func, P):
         if eval_func is not None:
             saved = []
         while torch.square(torch.norm(rk)).item() > tol and num_loop < max_iter:
-            pktapk = torch.sum(pk.conj() * (A * pk)).abs()
+            Apk = A * pk
+            pktapk = torch.sum(pk.conj() * (Apk)).abs()
             alpha = rktzk / pktapk
             xk1 = xk.add_(alpha * pk)
-            rk1 = rk.sub_(alpha * A * pk)
+            rk1 = rk.sub_(alpha * Apk)
             zk1 = P * rk1
             rk1tzk1 = (rk1.conj() * zk1).sum().abs()
             beta = rk1tzk1 / rktzk
